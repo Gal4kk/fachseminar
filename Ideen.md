@@ -9,7 +9,7 @@ Einstieg über den Klassenbegriff. Eine Pokemonfabrik (= der Computer/Greenfoot)
 Einstieg über das Kartenspiel. Die SuS bekommen Pokemonkarten (Objekte) und spielen zunächst einfach das Spiel. Sie lernen so spielerisch die Objekte kennen. Im nächsten Schritt sollen sie nochmals bewusster spielen, mit dem Auftrag, die individuellen Eigenschaften der Pokemon aufzuschreiben und nachzuhalten. Hier können auch doppelte Pokemon genutzt werden. Zuletzt formalisieren die SuS ihre Erkenntnisse und erstellen ein rudimentäres Objektdiagramm. 
 
 
-## Update 11.06.25 - Alternative 2 wird serh grob ausgestaltet: 
+## Update 11.06.25 - Alternative 2 wird sehr grob ausgestaltet: 
 
 Fachbegriffe: Objekt, Objektdiagramm, Modell, modellieren, Attribut, Attributwert, Methode, (Parameter) 
 
