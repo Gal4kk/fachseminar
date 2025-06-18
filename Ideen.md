@@ -32,4 +32,18 @@ Zwischensicherung II: Die Beiträge der SuS werden gewürdigt und die für das P
 Sicherung: Lückentext mit allen neuen Begriffen
 
 
+## Update 18.06.25 - Folgestunde zur Einführung des Klassenkonzepts
+
+etwaige Unterrichtseinheiten davor: Kennenlernen eines Greenfoot-Szenarios, in denen die Pokemonkämpfe ausgetragen und Objekte inspiziert werden können. Die modellierten Objekte der 1. Stunde sind jezt am Computer simuliert.
+
+Fachbegriffe: Klasse, Merksatz: Objekte sind Exemplare eine Klasse. Klassen sind Baupläne für gleichartige Objekte.
+
+1. Alternative: Die Abstraktion soll von den SuS selbst durchgeführt werden. Die SuS sind beim Entwickler angestellt und sollen eigene Pokemeon entwickeln.
+2. Alternative: Zunächst Abstraktion zeigen und dann daraus analysieren (auf Diagrammebene)
+# 3. Alternative: Die SuS explorieren das Greenfoot-Szenario und erkennen die Notwendigkeit von Klassen zur Implementierung.(Einführung des Klassenbegriffs auf Basis des Programmcodes). 
+-> Einstieg mit der leeren Welt: Wie erzeugen wir neue Pokmeon?
+-> Die SuS sollen neue Pokemon erzeugen. 
+
+potenzielle Folgestunde: weitere Vertiefung an einem anderen Beispiel (z.B. normale Tiere), Einführung und Arbeit mit Klassendiagrammen. 45 Minuten Einheit. 
+
 
