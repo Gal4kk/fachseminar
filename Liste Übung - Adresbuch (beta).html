@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Übung für List – Adressbuch</title>
+
+  <style>
+    :root{
+      --line:#cbd5e1; --text:#0f172a; --muted:#475569;
+      --bg:#ffffff; --card:#f8fafc; --highlight:#d1fae5;
+      --ptr:#1e40af;
+    }
+    body{
+      margin:16px;
+      font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--text); background:var(--bg);
+    }
+    h1{ font-size:18px; margin-bottom:10px; }
+
+    .toolbar{
+      display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; align-items:center;
+    }
+    button{
+      border:1px solid var(--line);
+      background:linear-gradient(#fff,#f5f7fb);
+      padding:8px 10px; border-radius:10px;
+      cursor:pointer; font-weight:600;
+    }
+    button:disabled{ opacity:.55; cursor:not-allowed; }
+    .code{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    .status{ margin:6px 0 14px; color:var(--muted); min-height:1.2em; }
+
+    .area{
+      border:1px solid var(--line); border-radius:12px; padding:24px 12px 12px;
+      background:var(--card); min-height:160px; position:relative;
+    }
+
+    .ptr{
+      position:absolute;
+      top:0;
+      transform:translateX(-50%);
+      background:#e2e8f0;
+      border:1px solid var(--line);
+      padding:2px 8px; font-size:12px;
+      border-radius:999px;
+      display:none;
+      white-space:nowrap;
+      z-index:3;
+    }
+    .ptrArrow{
+      position:absolute;
+      font-size:20px; line-height:1;
+      transform:translateX(-50%);
+      z-index:2;
+      display:none;
+      color:var(--ptr);
+    }
+
+    .list{
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .node{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:8px 10px;
+      background:#fff;
+      min-width:80px;
+      text-align:center;
+    }
+    .nullbox{
+      font-style:italic;
+      color:#6b7280;
+      padding:4px;
+    }
+    .arrow{
+      color:var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .currentNode{
+      background:var(--highlight);
+      border-color:#34d399;
+    }
+
+    .modal{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.25);
+      display:none; align-items:center; justify-content:center;
+    }
+    .modal .card{
+      background:#fff; padding:16px;
+      border:1px solid var(--line); border-radius:12px;
+      min-width:300px;
+    }
+    .modal .row{ display:flex; flex-direction:column; gap:6px; margin:8px 0; }
+    .modal input{
+      padding:6px; border:1px solid var(--line); border-radius:8px;
+    }
+    .modal .actions{
+      display:flex; gap:8px; justify-content:flex-end;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Übung für List – Adressbuch</h1>
+
+<div class="toolbar">
+  <button id="btnInit" class="code">List&lt;Kontakt&gt; liste = new List&lt;Kontakt&gt;();</button>
+
+  <button id="btnIsEmpty" class="code" disabled>liste.isEmpty()</button>
+  <button id="btnHasAccess" class="code" disabled>liste.hasAccess()</button>
+
+  <button id="btnToFirst" class="code" disabled>liste.toFirst()</button>
+  <button id="btnToLast" class="code" disabled>liste.toLast()</button>
+  <button id="btnNext" class="code" disabled>liste.next()</button>
+
+  <button id="btnGetContent" class="code" disabled>liste.getContent()</button>
+  <button id="btnSetContent" class="code" disabled>liste.setContent()</button>
+
+  <button id="btnAppend" class="code" disabled>liste.append()</button>
+  <button id="btnInsert" class="code" disabled>liste.insert()</button>
+
+  <!-- NUR EIN BUTTON: liste.concat() -->
+  <button id="btnConcat" class="code" disabled>liste.concat()</button>
+
+  <button id="btnRemove" class="code" disabled>liste.remove()</button>
+</div>
+
+<div id="status" class="status code">&nbsp;</div>
+
+<div class="area">
+  <div id="ptrFirst" class="ptr code">first</div>
+  <div id="ptrFirstArrow" class="ptrArrow">↓</div>
+
+  <div id="ptrLast" class="ptr code">last</div>
+  <div id="ptrLastArrow" class="ptrArrow">↓</div>
+
+  <div id="ptrCurrent" class="ptr code">current</div>
+  <div id="ptrCurrentArrow" class="ptrArrow">↓</div>
+
+  <div id="view" class="list"></div>
+</div>
+
+<!-- Modal für normalen Kontakt -->
+<div id="modal" class="modal">
+  <div class="card">
+    <div id="modalTitle" class="code"></div>
+    <div class="row">
+      <input id="inName" placeholder="Name" />
+      <input id="inAdr" placeholder="Adresse" />
+      <input id="inTel" placeholder="Telefon" />
+    </div>
+    <div class="actions">
+      <button id="btnCancel">Abbrechen</button>
+      <button id="btnOk" class="code">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal für concat -->
+<div id="modalConcat" class="modal">
+  <div class="card">
+    <div class="code">liste.concat(_)</div>
+
+    <div id="concatListPreview" class="code" style="margin:8px 0; color:#374151;">
+      (noch leer)
+    </div>
+
+    <div class="row">
+      <input id="inNameC" placeholder="Name" />
+      <input id="inAdrC" placeholder="Adresse" />
+      <input id="inTelC" placeholder="Telefon" />
+    </div>
+
+    <div class="actions">
+      <button id="btnAddToConcat" class="code">Hinzufügen</button>
+      <button id="btnDoneConcat" class="code">Fertig</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ---------------------------------------------------------------------- */
+  /* KONTAKT MIT FESTER ID */
+  /* ---------------------------------------------------------------------- */
+  let globalIdCounter = 1;
+
+  class Kontakt {
+    constructor(id, name, adr, tel){
+      this.id = id;
+      this.name = name;
+      this.adr = adr;
+      this.tel = tel;
+    }
+    toString(){
+      return this.name + " | " + this.adr + " | " + this.tel;
+    }
+  }
+
+  /* ---------------------------------------------------------------------- */
+  /* SIMPLE LIST */
+  /* ---------------------------------------------------------------------- */
+  class SimpleList {
+    constructor(){
+      this.data = [];
+      this.current = -1;
+    }
+    isEmpty(){ return this.data.length===0; }
+    hasAccess(){ return this.current>=0 && this.current<this.data.length; }
+    toFirst(){ if(!this.isEmpty()) this.current=0; }
+    toLast(){ if(!this.isEmpty()) this.current=this.data.length-1; }
+    next(){ if(this.hasAccess()) this.current++; }
+    getContent(){ return this.hasAccess()?this.data[this.current]:null; }
+
+    setContent(k){
+      if(this.hasAccess()) this.data[this.current]=k;
+    }
+
+    append(k){ this.data.push(k); }
+
+    insert(k){
+      if(this.hasAccess()) this.data.splice(this.current,0,k);
+      else this.data.unshift(k);
+    }
+
+    concat(other){
+      this.data.push(...other.data);
+    }
+
+    remove(){
+      if(this.hasAccess()){
+        this.data.splice(this.current,1);
+        if(this.current>=this.data.length) this.current=-1;
+      }
+    }
+  }
+
+  let liste = null;
+  let concatList = new SimpleList();
+
+  /* ---------------------------------------------------------------------- */
+  /* RENDERING */
+  /* ---------------------------------------------------------------------- */
+  const view = document.getElementById("view");
+  const status = msg => document.getElementById("status").textContent = msg;
+
+  const ptrs = {
+    first:[document.getElementById("ptrFirst"),document.getElementById("ptrFirstArrow")],
+    last:[document.getElementById("ptrLast"),document.getElementById("ptrLastArrow")],
+    current:[document.getElementById("ptrCurrent"),document.getElementById("ptrCurrentArrow")]
+  };
+
+  function hidePointers(){
+    Object.values(ptrs).forEach(([lbl,arr])=>{
+      lbl.style.display="none";
+      arr.style.display="none";
+    });
+  }
+
+  function placePointer(lbl, arr, rect, area){
+    const x=rect.left-area.left+rect.width/2;
+    lbl.style.left=x+"px";
+    arr.style.left=x+"px";
+    lbl.style.display="block";
+    arr.style.display="block";
+  }
+
+  function render(){
+    view.innerHTML="";
+    hidePointers();
+
+    if(!liste){
+      status("Noch nicht instanziiert.");
+      return;
+    }
+
+    document.querySelectorAll("button").forEach(btn=>{
+      if(btn.id!=="btnInit") btn.disabled=false;
+    });
+
+    const area=view.getBoundingClientRect();
+
+    if(liste.isEmpty()){
+      const nullBox=document.createElement("div");
+      nullBox.className="nullbox";
+      nullBox.textContent="null";
+      view.appendChild(nullBox);
+      placePointer(ptrs.current[0],ptrs.current[1],
+        nullBox.getBoundingClientRect(),area);
+      return;
+    }
+
+    const nodes=[];
+    for(let i=0;i<liste.data.length;i++){
+      const box=document.createElement("div");
+      box.className="node code";
+      box.textContent="Knoten "+liste.data[i].id;
+
+      if(i===liste.current) box.classList.add("currentNode");
+
+      view.appendChild(box);
+      nodes.push(box);
+
+      if(i<liste.data.length-1){
+        const arrow=document.createElement("div");
+        arrow.className="arrow";
+        arrow.textContent="→";
+        view.appendChild(arrow);
+      }
+    }
+
+    const arrow=document.createElement("div");
+    arrow.className="arrow";
+    arrow.textContent="→";
+    view.appendChild(arrow);
+
+    const nullBox=document.createElement("div");
+    nullBox.className="nullbox";
+    nullBox.textContent="null";
+    view.appendChild(nullBox);
+
+    const areaRect=view.getBoundingClientRect();
+
+    placePointer(ptrs.first[0],ptrs.first[1],
+      nodes[0].getBoundingClientRect(),areaRect);
+
+    placePointer(ptrs.last[0],ptrs.last[1],
+      nodes[nodes.length-1].getBoundingClientRect(),areaRect);
+
+    if(liste.hasAccess()){
+      placePointer(ptrs.current[0],ptrs.current[1],
+        nodes[liste.current].getBoundingClientRect(),areaRect);
+    } else {
+      placePointer(ptrs.current[0],ptrs.current[1],
+        nullBox.getBoundingClientRect(),areaRect);
+    }
+  }
+
+  /* ---------------------------------------------------------------------- */
+  /* MODAL NORMAL */
+  /* ---------------------------------------------------------------------- */
+  const modal=document.getElementById("modal");
+  const inName=document.getElementById("inName");
+  const inAdr=document.getElementById("inAdr");
+  const inTel=document.getElementById("inTel");
+  const modalTitle=document.getElementById("modalTitle");
+
+  function openModal(title, oldKontakt, callback){
+    modalTitle.textContent=title;
+
+    if(oldKontakt){
+      inName.value=oldKontakt.name;
+      inAdr.value =oldKontakt.adr;
+      inTel.value =oldKontakt.tel;
+    } else {
+      inName.value="";
+      inAdr.value="";
+      inTel.value="";
+    }
+
+    modal.style.display="flex";
+
+    document.getElementById("btnOk").onclick=()=>{
+      if(!inName.value.trim()||!inAdr.value.trim()||!inTel.value.trim()) return;
+      modal.style.display="none";
+
+      if(oldKontakt){
+        const updated=new Kontakt(
+          oldKontakt.id,
+          inName.value,
+          inAdr.value,
+          inTel.value
+        );
+        callback(updated);
+      } else {
+        callback(new Kontakt(
+          globalIdCounter++,
+          inName.value,
+          inAdr.value,
+          inTel.value
+        ));
+      }
+      render();
+    };
+
+    document.getElementById("btnCancel").onclick=()=>{
+      modal.style.display="none";
+      render();
+    };
+  }
+
+  /* ---------------------------------------------------------------------- */
+  /* MODAL CONCAT */
+  /* ---------------------------------------------------------------------- */
+  const modalConcat=document.getElementById("modalConcat");
+  const concatPreview=document.getElementById("concatListPreview");
+  const inNameC=document.getElementById("inNameC");
+  const inAdrC=document.getElementById("inAdrC");
+  const inTelC=document.getElementById("inTelC");
+
+  function updateConcatPreview(){
+    if(concatList.data.length===0){
+      concatPreview.textContent="(noch leer)";
+      return;
+    }
+    concatPreview.textContent =
+      concatList.data.map(c=>"Knoten "+c.id+": "+c.toString()).join("\n");
+  }
+
+  document.getElementById("btnConcat").onclick=()=>{
+    modalConcat.style.display="flex";
+    updateConcatPreview();
+  };
+
+  document.getElementById("btnAddToConcat").onclick=()=>{
+    if(!inNameC.value.trim()||!inAdrC.value.trim()||!inTelC.value.trim()) return;
+
+    concatList.append(new Kontakt(
+      globalIdCounter++,
+      inNameC.value,
+      inAdrC.value,
+      inTelC.value
+    ));
+
+    inNameC.value="";
+    inAdrC.value="";
+    inTelC.value="";
+
+    updateConcatPreview();
+  };
+
+  /* ————————————————————————
+     WICHTIG: FERTIG = LISTE ANHÄNGEN
+  ———————————————————————— */
+  document.getElementById("btnDoneConcat").onclick=()=>{
+    modalConcat.style.display="none";
+
+    if(concatList.data.length>0){
+      liste.concat(concatList);
+      status("liste.concat(...) – concat-Liste angehängt");
+      concatList=new SimpleList();
+    } else {
+      status("concat-Liste war leer – nichts angehängt");
+    }
+
+    render();
+  };
+
+  /* ---------------------------------------------------------------------- */
+  /* BUTTONS */
+  /* ---------------------------------------------------------------------- */
+  document.getElementById("btnInit").onclick=()=>{
+    liste=new SimpleList();
+
+    liste.append(new Kontakt(globalIdCounter++,"Anna Sommer","Lindenweg 12, 47051 Duisburg","0203 458912"));
+    liste.append(new Kontakt(globalIdCounter++,"Markus Feldmann","Gartenstraße 44, 47137 Duisburg","0203 913457"));
+    liste.append(new Kontakt(globalIdCounter++,"Selin Kaya","Am Park 8, 47057 Duisburg","0203 771234"));
+    liste.append(new Kontakt(globalIdCounter++,"Tobias Krämer","Ruhrtalstraße 21, 47059 Duisburg","0203 669812"));
+    liste.append(new Kontakt(globalIdCounter++,"Julia Neubert","Kranichweg 3, 47119 Duisburg","0203 443298"));
+    liste.append(new Kontakt(globalIdCounter++,"Leon Hartmann","Berliner Allee 95, 47053 Duisburg","0203 129884"));
+    liste.append(new Kontakt(globalIdCounter++,"Fatma Aydın","Königstraße 17, 47051 Duisburg","0203 550129"));
+    liste.append(new Kontakt(globalIdCounter++,"Moritz Becker","Falkenstraße 6, 47166 Duisburg","0203 789004"));
+
+    status("Liste instanziiert (8 Elemente).");
+    render();
+  };
+
+  document.getElementById("btnIsEmpty").onclick=()=>{
+    status("liste.isEmpty() → "+liste.isEmpty());
+  };
+  document.getElementById("btnHasAccess").onclick=()=>{
+    status("liste.hasAccess() → "+liste.hasAccess());
+  };
+
+  document.getElementById("btnToFirst").onclick=()=>{
+    liste.toFirst(); status("liste.toFirst()"); render();
+  };
+  document.getElementById("btnToLast").onclick=()=>{
+    liste.toLast(); status("liste.toLast()"); render();
+  };
+  document.getElementById("btnNext").onclick=()=>{
+    liste.next(); status("liste.next()"); render();
+  };
+
+  document.getElementById("btnGetContent").onclick=()=>{
+    if(!liste.hasAccess()){
+      status("liste.getContent() → current=null");
+      return;
+    }
+    status("liste.getContent() → "+liste.getContent().toString());
+  };
+
+  document.getElementById("btnSetContent").onclick=()=>{
+    if(!liste.hasAccess()){ status("Kein Zugriff."); return; }
+
+    openModal("liste.setContent(_)", liste.getContent(), kontakt=>{
+      liste.setContent(kontakt);
+      status("liste.setContent(...) – geändert");
+    });
+  };
+
+  document.getElementById("btnAppend").onclick=()=>{
+    openModal("liste.append(_)", null, kontakt=>{
+      liste.append(kontakt);
+      status("liste.append(...) – angefügt");
+    });
+  };
+
+  document.getElementById("btnInsert").onclick=()=>{
+    openModal("liste.insert(_)", null, kontakt=>{
+      liste.insert(kontakt);
+      status("liste.insert(...) – eingefügt");
+    });
+  };
+
+  document.getElementById("btnRemove").onclick=()=>{
+    if(!liste.hasAccess()){
+      status("liste.remove() → current=null");
+      return;
+    }
+    liste.remove();
+    status("liste.remove() – Element entfernt");
+    render();
+  };
+
+  render();
+</script>
+
+</body>
+</html>
