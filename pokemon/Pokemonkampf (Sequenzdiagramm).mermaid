@@ -1,0 +1,19 @@
+sequenceDiagram
+
+Kampf->>Kampf: Der Kampf beginnt
+activate Kampf
+
+alt Keins von Beiden ist besiegt
+    loop Kampf-Runden
+        Pokemon1->>Pokemon2: tackle
+        Pokemon1->>Pokemon2: Schaden wird verursacht
+
+        Pokemon2->>Pokemon1: tackle
+        Pokemon2->>Pokemon1: Schaden verursacht
+    end
+else Eins ist K.O
+    Kampf->>Kampf: Wer hat gewonnen?
+    Kampf->>Kampf: Rueckgabe Sieger   
+end
+
+deactivate Kampf
