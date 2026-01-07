@@ -196,7 +196,7 @@ public class Adressbuch {
         //if (kontaktListe.___()) {
         //    return kontaktListe.___();
         //}
-        //return ___;
+        return null; // Rückgabewert anpassen
         *aufg*/
         //ml*
         if (kontaktListe.hasAccess()) {
@@ -239,7 +239,7 @@ public class Adressbuch {
         //    kontaktListe.___();
         //}
         //
-        //return ___;
+        return false; // Rückgabewert anpassen
         *aufg*/
         //ml*
         kontaktListe.toFirst();
@@ -302,7 +302,7 @@ public class Adressbuch {
         //    ___++;
         //    kontaktListe.___();
         //}
-        //return ___;
+        return -1; // Rückgabewert anpassen
         *aufg*/
         //ml*
         int anzahl = 0;
