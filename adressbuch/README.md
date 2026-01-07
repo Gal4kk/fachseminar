@@ -1,17 +1,25 @@
 # Adressbuch-Programm zur Arbeit mit der linearen Datenstruktur Liste
 
 ```mermaid
+
+
+
 classDiagram
-    class AdressbuchGUI {
+    class Adressbuch {
         -List~Kontakt~ kontaktListe
-        +AdressbuchGUI()
-        -aktualisiereAnzeige() void
-        -kontaktHinzufuegen() void
-        -kontaktHinzufuegen(String, String, String) void
-        -sucheNachVorname(String) boolean
-        -zumAnfang() void
-        -zumNaechsten() void
-        -zumEnde() void
+        +Adressbuch()
+        +erstelleBeispieldaten() void
+        +kontaktHinzufuegen(String, String, String) void
+        +zumAnfang() void
+        +zumNaechsten() void
+        +zumEnde() void
+        +getAktuellerKontakt() Kontakt
+        +sucheNachVorname(String) boolean
+        +aktuellenKontaktLoeschen() void
+        +anzahlKontakte() int
+    }
+
+    class AdressbuchGUI {
         +main(String[]) void
     }
 
@@ -55,8 +63,10 @@ classDiagram
         +setNextNode(ListNode) void
     }
 
-    AdressbuchGUI --> List~Kontakt~ : -kontaktListe
-    List~ContentType~ --> ListNode:  -first,-last,-current
+    AdressbuchGUI --> Adressbuch : -controller
+    Adressbuch --> List~Kontakt~ : -kontaktListe
+    List~ContentType~ --> ListNode : -first,-last,-current
 
     note for List "Inhaltstyp: Kontakt"
+
 ```
