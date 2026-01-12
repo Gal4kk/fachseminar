@@ -11,10 +11,11 @@ public class AdressbuchGUI extends JFrame {
     private JPanel kontaktListePanel;
     private JScrollPane scrollPane;
     private JButton btnHinzufuegen;
-    private JButton btnAktualisieren;
     private JButton btnSuchen;
+    private JButton btnLoeschen;
     private JTextField suchfeld;
     private boolean suchModus = false;
+    private JLabel ueberschrift;
 
     /**
      * Konstruktor der GUI.
@@ -22,9 +23,6 @@ public class AdressbuchGUI extends JFrame {
     public AdressbuchGUI() {
         super("Adressbuch - Listenansicht");
         controller = new Adressbuch();
-        
-        // Beispieldaten einfügen
-        controller.erstelleBeispieldaten();
         
         // GUI initialisieren
         initGUI();
@@ -42,7 +40,7 @@ public class AdressbuchGUI extends JFrame {
         setLayout(new BorderLayout(10, 10));
 
         // Überschrift
-        JLabel ueberschrift = new JLabel("Alle Kontakte", SwingConstants.CENTER);
+        ueberschrift = new JLabel("Kontakte", SwingConstants.CENTER);
         ueberschrift.setFont(new Font("SansSerif", Font.BOLD, 18));
         ueberschrift.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         add(ueberschrift, BorderLayout.NORTH);
@@ -70,19 +68,19 @@ public class AdressbuchGUI extends JFrame {
         // Buttons erstellen
         btnSuchen = new JButton("Suchen");
         btnHinzufuegen = new JButton("Neuer Kontakt");
-        btnAktualisieren = new JButton("Alle anzeigen");
+        btnLoeschen = new JButton("Löschen");
+        btnLoeschen.setEnabled(false); // Anfangs deaktiviert
 
         // Event-Listener hinzufügen
         btnSuchen.addActionListener(e -> kontaktSuchen());
         btnHinzufuegen.addActionListener(e -> kontaktHinzufuegen());
-        btnAktualisieren.addActionListener(e -> alleAnzeigen());
+        btnLoeschen.addActionListener(e -> kontaktLoeschen());
 
         // Komponenten zum Panel hinzufügen
         buttonPanel.add(btnHinzufuegen);
-        buttonPanel.add(btnAktualisieren);
         buttonPanel.add(suchfeld);
         buttonPanel.add(btnSuchen);
-        buttonPanel.add(new JSeparator(SwingConstants.VERTICAL));
+        buttonPanel.add(btnLoeschen);
 
         add(buttonPanel, BorderLayout.SOUTH);
 
@@ -99,6 +97,7 @@ public class AdressbuchGUI extends JFrame {
 
         // Im Suchmodus: nur den gefundenen Kontakt anzeigen
         if (suchModus) {
+            ueberschrift.setText("Kontakte-Suchergebnis");
             Kontakt gefundenerKontakt = controller.getAktuellerKontakt();
             if (gefundenerKontakt != null) {
                 JPanel kontaktPanel = erstelleKontaktPanel(gefundenerKontakt, 1);
@@ -107,13 +106,14 @@ public class AdressbuchGUI extends JFrame {
         } else {
             // Normale Ansicht: alle Kontakte anzeigen
             int anzahl = controller.anzahlKontakte();
+            ueberschrift.setText(anzahl + " Kontakte");
 
             if (anzahl == 0) {
                 JLabel keinKontakt = new JLabel("Keine Kontakte vorhanden");
                 keinKontakt.setFont(new Font("SansSerif", Font.ITALIC, 14));
                 keinKontakt.setAlignmentX(Component.CENTER_ALIGNMENT);
                 kontaktListePanel.add(keinKontakt);
-            } else {
+            } else {                
                 // Alle Kontakte durchlaufen und anzeigen
                 controller.zumAnfang();
                 int index = 1;
@@ -200,14 +200,13 @@ public class AdressbuchGUI extends JFrame {
 
     /**
      * Sucht einen Kontakt nach Vorname mit der Adressbuch-Methode.
+     * Bei leerem Suchfeld werden alle Kontakte angezeigt.
      */
     private void kontaktSuchen() {
         String suchbegriff = suchfeld.getText().trim();
         
         if (suchbegriff.isEmpty()) {
-            JOptionPane.showMessageDialog(this, 
-                "Bitte einen Vornamen eingeben!", 
-                "Fehler", JOptionPane.ERROR_MESSAGE);
+            alleAnzeigen();
             return;
         }
         
@@ -216,10 +215,8 @@ public class AdressbuchGUI extends JFrame {
         
         if (gefunden) {
             suchModus = true;
+            btnLoeschen.setEnabled(true);
             aktualisiereKontaktListe();
-            JOptionPane.showMessageDialog(this, 
-                "Kontakt gefunden!", 
-                "Erfolg", JOptionPane.INFORMATION_MESSAGE);
         } else {
             suchModus = false;
             JOptionPane.showMessageDialog(this, 
@@ -233,8 +230,45 @@ public class AdressbuchGUI extends JFrame {
      */
     private void alleAnzeigen() {
         suchModus = false;
+        btnLoeschen.setEnabled(false);
         suchfeld.setText("");
         aktualisiereKontaktListe();
+    }
+
+    /**
+     * Löscht den aktuell gefundenen Kontakt im Suchmodus.
+     */
+    private void kontaktLoeschen() {
+        if (!suchModus) {
+            JOptionPane.showMessageDialog(this, 
+                "Bitte zuerst einen Kontakt suchen!", 
+                "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        Kontakt zuLoeschenderKontakt = controller.getAktuellerKontakt();
+        if (zuLoeschenderKontakt == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Kein Kontakt zum Löschen vorhanden!", 
+                "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Bestätigung abfragen
+        int bestaetigung = JOptionPane.showConfirmDialog(this, 
+            "Möchten Sie den Kontakt '" + zuLoeschenderKontakt.getVorname() + " " 
+            + zuLoeschenderKontakt.getNachname() + "' wirklich löschen?",
+            "Kontakt löschen", 
+            JOptionPane.YES_NO_OPTION, 
+            JOptionPane.QUESTION_MESSAGE);
+        
+        if (bestaetigung == JOptionPane.YES_OPTION) {
+            controller.aktuellenKontaktLoeschen();
+            JOptionPane.showMessageDialog(this, 
+                "Kontakt erfolgreich gelöscht!", 
+                "Erfolg", JOptionPane.INFORMATION_MESSAGE);
+            alleAnzeigen();
+        }
     }
 
     /**

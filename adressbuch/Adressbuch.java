@@ -9,7 +9,7 @@ public class Adressbuch {
     *aufg*/
     /*aufg* 2
     // TODO: Erstelle eine Objektvariable "kontaktListe" vom Typ List<Kontakt>
-    //private List<___> kontaktListe;
+    //private ____<Kontakt> kontaktListe;
     *aufg*/
     //ml*
     private List<Kontakt> kontaktListe;
@@ -23,10 +23,12 @@ public class Adressbuch {
         /*aufg* 1
         // TODO: Initialisiere die kontaktListe als neue leere Liste
         *aufg*/
+
         /*aufg* 2
         // TODO: Initialisiere die kontaktListe als neue leere Liste
-        //kontaktListe = new ___<>();
+        //kontaktListe = new ___<Kontakt>();
         *aufg*/
+
         //ml*
         kontaktListe = new List<Kontakt>();
         //*ml
@@ -71,64 +73,7 @@ public class Adressbuch {
         kontaktListe.append(neuerKontakt);
         //*ml
     }
-    
-    /**
-     * Fügt einen neuen Kontakt sortiert nach Nachname in die Liste ein.
-     * Die Liste wird alphabetisch nach Nachnamen sortiert gehalten.
-     * 
-     * @param vorname Der Vorname des Kontakts
-     * @param nachname Der Nachname des Kontakts
-     * @param telNr Die Telefonnummer des Kontakts
-     */
-    public void kontaktSortiertEinfuegen(String vorname, String nachname, String telNr) {
-        /*aufg* 1
-        // TODO: Erstelle ein neues Kontakt-Objekt mit den übergebenen Parametern
-        // TODO: Setze den Zeiger auf das erste Element
-        // TODO: Durchlaufe die Liste und vergleiche die Nachnamen
-        // TODO: Wenn der Nachname des aktuellen Kontakts alphabetisch größer ist,
-        //       füge den neuen Kontakt VOR dem aktuellen ein (mit insert) und beende die Methode
-        // TODO: Gehe zum nächsten Element
-        // TODO: Wenn kein passender Platz gefunden wurde, füge den Kontakt am Ende ein (mit append)
-        *aufg*/
-        /*aufg* 2
-        // TODO: Erstelle ein neues Kontakt-Objekt mit den übergebenen Parametern
-        // TODO: Setze den Zeiger auf das erste Element
-        // TODO: Durchlaufe die Liste und vergleiche die Nachnamen
-        // TODO: Wenn der Nachname des aktuellen Kontakts alphabetisch größer ist,
-        //       füge den neuen Kontakt VOR dem aktuellen ein (mit insert) und beende die Methode
-        // TODO: Gehe zum nächsten Element
-        // TODO: Wenn kein passender Platz gefunden wurde, füge den Kontakt am Ende ein (mit append)
-        //Kontakt neuerKontakt = new Kontakt(___, ___, ___);
-        //kontaktListe.___();
-        //
-        //while (kontaktListe.___()) {
-        //    Kontakt k = kontaktListe.___();
-        //    if (k.getNachname().compareTo(___) > 0) {
-        //        kontaktListe.___(neuerKontakt);
-        //        return;
-        //    }
-        //    kontaktListe.___();
-        //}
-        //
-        //kontaktListe.___(neuerKontakt);
-        *aufg*/
-        //ml*
-        Kontakt neuerKontakt = new Kontakt(vorname, nachname, telNr);
-        kontaktListe.toFirst();
-        
-        while (kontaktListe.hasAccess()) {
-            Kontakt k = kontaktListe.getContent();
-            if (k.getNachname().compareTo(nachname) > 0) {
-                kontaktListe.insert(neuerKontakt);
-                return;
-            }
-            kontaktListe.next();
-        }
-        
-        kontaktListe.append(neuerKontakt);
-        //*ml
-    }
-    
+ 
     /**
      * Springt zum ersten Kontakt in der Liste.
      */
@@ -184,25 +129,16 @@ public class Adressbuch {
      */
     public Kontakt getAktuellerKontakt() {
         /*aufg* 1
-        // TODO: Prüfe, ob die Liste Zugriff auf ein Element hat
-        // TODO: Wenn ja, gib das aktuelle Element zurück
-        // TODO: Sonst gib null zurück
+        // TODO: Inhalt der Liste zurückgeben
         return null;
         *aufg*/
         /*aufg* 2
-        // TODO: Prüfe, ob die Liste Zugriff auf ein Element hat
-        // TODO: Wenn ja, gib das aktuelle Element zurück
-        // TODO: Sonst gib null zurück
-        //if (kontaktListe.___()) {
-        //    return kontaktListe.___();
-        //}
+        // TODO: Inhalt der Liste zurückgeben
+        return kontaktListe.___();
         return null; // Rückgabewert anpassen
         *aufg*/
         //ml*
-        if (kontaktListe.hasAccess()) {
-            return kontaktListe.getContent();
-        }
-        return null;
+        return kontaktListe.getContent();
         //*ml
     }
     
@@ -216,7 +152,7 @@ public class Adressbuch {
         /*aufg* 1
         // TODO: Setze den Zeiger auf das erste Element
         // TODO: Durchlaufe die Liste mit einer while-Schleife
-        // TODO: Prüfe für jeden Kontakt, ob der Vorname mit dem Suchbegriff übereinstimmt
+        // TODO: Prüfe für jeden Kontakt, ob der Vorname mit dem Suchbegriff übereinstimmt (nutze die Methode equals() der String-Klasse)
         // TODO: Wenn ja, gib true zurück
         // TODO: Gehe zum nächsten Element
         // TODO: Wenn kein Kontakt gefunden wurde, gib false zurück
@@ -233,7 +169,7 @@ public class Adressbuch {
         //
         //while (kontaktListe.___()) {
         //    Kontakt k = kontaktListe.___();
-        //    if (k.getVorname().___(vorname)) {
+        //    if (k.getVorname().equals(vorname)) {
         //        return ___;
         //    }
         //    kontaktListe.___();
@@ -261,22 +197,82 @@ public class Adressbuch {
      */
     public void aktuellenKontaktLoeschen() {
         /*aufg* 1
-        // TODO: Prüfe, ob die Liste Zugriff auf ein Element hat
-        // TODO: Wenn ja, entferne das aktuelle Element
+        // TODO: Entferne das aktuelle Element der Liste
         *aufg*/
         /*aufg* 2
-        // TODO: Prüfe, ob die Liste Zugriff auf ein Element hat
-        // TODO: Wenn ja, entferne das aktuelle Element
-        //if (kontaktListe.___()) {
-        //    kontaktListe.___();
-        //}
+        // TODO: Entferne das aktuelle Element der Liste
+        kontaktListe.___();
         *aufg*/
         //ml*
-        if (kontaktListe.hasAccess()) {
-            kontaktListe.remove();
-        }
+        kontaktListe.remove();
         //*ml
     }
+
+       
+    /**
+     * Fügt einen neuen Kontakt sortiert nach Nachname in die Liste ein.
+     * Die Liste wird alphabetisch nach Nachnamen sortiert gehalten.
+     * 
+     * Die Methode compareTo() der String-Klasse kann verwendet werden, um zwei Strings alphabetisch zu vergleichen.
+     * Sie gibt einen Wert kleiner als 0 zurück, wenn der erste String alphabetisch vor dem zweiten String liegt, 
+     * 0 wenn sie gleich sind, 
+     * und einen Wert größer als 0, wenn der erste String alphabetisch nach dem zweiten String kommt.
+     * 
+     * 
+     * 
+     * @param vorname Der Vorname des Kontakts
+     * @param nachname Der Nachname des Kontakts
+     * @param telNr Die Telefonnummer des Kontakts
+     */
+    public void kontaktSortiertEinfuegen(String vorname, String nachname, String telNr) {
+        /*aufg* 1
+        // TODO: Erstelle ein neues Kontakt-Objekt mit den übergebenen Parametern
+        // TODO: Setze den Zeiger auf das erste Element
+        // TODO: Durchlaufe die Liste und vergleiche die Nachnamen
+        // TODO: Wenn der Nachname des aktuellen Kontakts alphabetisch größer ist,
+        //       füge den neuen Kontakt VOR dem aktuellen ein (mit insert) und beende die Methode
+        //       Um zwei Strings alphabetisch zu vergleichen, nutze die Methode compareTo() der String-Klasse
+        // TODO: Gehe zum nächsten Element
+        // TODO: Wenn kein passender Platz gefunden wurde, füge den Kontakt am Ende ein (mit append)
+        *aufg*/
+        /*aufg* 2
+        // TODO: Erstelle ein neues Kontakt-Objekt mit den übergebenen Parametern
+        // TODO: Setze den Zeiger auf das erste Element
+        // TODO: Durchlaufe die Liste und vergleiche die Nachnamen
+        // TODO: Wenn der Nachname des aktuellen Kontakts alphabetisch größer ist,
+        //       füge den neuen Kontakt VOR dem aktuellen ein (mit insert) und beende die Methode
+        // TODO: Gehe zum nächsten Element
+        // TODO: Wenn kein passender Platz gefunden wurde, füge den Kontakt am Ende ein (mit append)
+        //Kontakt neuerKontakt = new Kontakt(___, ___, ___);
+        //kontaktListe.___();
+        //
+        //while (kontaktListe.___()) {
+        //    Kontakt k = kontaktListe.___();
+        //    if (k.getNachname().compareTo(___) > 0) {
+        //        kontaktListe.___(neuerKontakt);
+        //        return;
+        //    }
+        //    kontaktListe.___();
+        //}
+        //
+        //kontaktListe.___(neuerKontakt);
+        *aufg*/
+        //ml*
+        Kontakt neuerKontakt = new Kontakt(vorname, nachname, telNr);
+        kontaktListe.toFirst();
+        
+        while (kontaktListe.hasAccess()) {
+            Kontakt k = kontaktListe.getContent();
+            if (k.getNachname().compareTo(nachname) > 0) {
+                kontaktListe.insert(neuerKontakt);
+                return;
+            }
+            kontaktListe.next();
+        }
+        
+        kontaktListe.append(neuerKontakt);
+        //*ml
+    }    
     
     /**
      * Zählt die Anzahl der Kontakte in der Liste.
