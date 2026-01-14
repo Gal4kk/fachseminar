@@ -134,7 +134,7 @@ public class Adressbuch {
         *aufg*/
         /*aufg* 2
         // TODO: Inhalt der Liste zurückgeben
-        return kontaktListe.___();
+        //return kontaktListe.___();
         return null; // Rückgabewert anpassen
         *aufg*/
         //ml*
@@ -201,7 +201,7 @@ public class Adressbuch {
         *aufg*/
         /*aufg* 2
         // TODO: Entferne das aktuelle Element der Liste
-        kontaktListe.___();
+        //kontaktListe.___();
         *aufg*/
         //ml*
         kontaktListe.remove();
